@@ -1,0 +1,10 @@
+apple
+banana
+car
+dragon
+energy
+forest
+galaxy
+hero
+island
+jungle
