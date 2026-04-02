@@ -16,7 +16,7 @@ def main():
 
     num_words = int(sys.argv[1])
 
-    words = load_words()
+    words = load_words()  
     random_words = get_random_words(words, num_words)
 
     sentence = " ".join(random_words) + "."
