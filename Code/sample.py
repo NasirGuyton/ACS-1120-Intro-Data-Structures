@@ -43,8 +43,8 @@ def main():
     input_text = " ".join(sys.argv[1:])
     hist = histogram(input_text)
 
-    print("Uniform sample:", sample_uniform(hist))
-    print("Weighted sample:", sample_weighted(hist))
+    print( sample_uniform(hist))
+    print( sample_weighted(hist))
 
 
 if __name__ == "__main__":
