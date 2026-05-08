@@ -1,7 +1,8 @@
 """Main script, uses other modules to generate sentences."""
 
 from flask import Flask
-from markov import tokenize, build_markov_chain, generate_sentence
+from tokens import tokenize
+from markov import build_markov_chain, generate_sentence
 
 app = Flask(__name__)
 

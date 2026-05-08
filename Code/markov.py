@@ -1,14 +1,10 @@
 #!python
 
 import random
-import re
+from tokens import tokenize
 from dictogram import Dictogram
 from queue import Queue
 
-
-def tokenize(text):
-    """Split text into word and punctuation tokens."""
-    return re.findall(r"\b\w+\b|[.!?]", text)
 
 
 def build_markov_chain(words, order=2):
