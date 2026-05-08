@@ -1,3 +1,5 @@
+#!python
+
 
 class Node(object):
 
@@ -75,20 +77,16 @@ class LinkedList(object):
             self.head = new_node
 
     def find(self, matcher):
-        """Return an item from this linked list if it is present.
-
-        The matcher argument should be a function that takes an item
-        and returns True if it matches.
-
-        Best case running time: O(1), if the first item matches.
-        Worst case running time: O(n), if the match is near the end
-        or no matching item exists.
-        """
+        
         node = self.head
 
         while node is not None:
-            if matcher(node.data):
-                return node.data
+            if callable(matcher):
+                if matcher(node.data):
+                    return node.data
+            else:
+                if node.data == matcher:
+                    return node.data
 
             node = node.next
 
