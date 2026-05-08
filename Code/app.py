@@ -6,7 +6,7 @@ from markov import tokenize, build_markov_chain, generate_sentence
 app = Flask(__name__)
 
 
-def load_corpus(filename="corpus.txt"):
+def load_corpus(filename="cleaned_corpus.txt"):
     """Load source text from a corpus file."""
     with open(filename, "r", encoding="utf-8") as file:
         return file.read()
