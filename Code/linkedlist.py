@@ -1,4 +1,3 @@
-#!python
 
 
 class Node(object):
@@ -77,7 +76,7 @@ class LinkedList(object):
             self.head = new_node
 
     def find(self, matcher):
-        
+       
         node = self.head
 
         while node is not None:
@@ -86,11 +85,14 @@ class LinkedList(object):
                     return node.data
             else:
                 if node.data == matcher:
-                    return node.data
+                    return True
 
             node = node.next
 
-        return None
+        if callable(matcher):
+            return None
+
+        return False
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError."""
