@@ -1,4 +1,3 @@
-#!python
 
 
 class Node(object):
@@ -48,6 +47,7 @@ class LinkedList:
 
     def length(self):
         """Return the length of this linked list by traversing its nodes.
+
         Running time: O(n), because it visits each node once.
         """
         count = 0
@@ -61,6 +61,7 @@ class LinkedList:
 
     def append(self, item):
         """Insert the given item at the tail of this linked list.
+
         Running time: O(1), because tail gives direct access to the end.
         """
         new_node = Node(item)
@@ -74,6 +75,7 @@ class LinkedList:
 
     def prepend(self, item):
         """Insert the given item at the head of this linked list.
+
         Running time: O(1), because head gives direct access to the front.
         """
         new_node = Node(item)
@@ -86,21 +88,32 @@ class LinkedList:
             self.head = new_node
 
     def find(self, matcher):
-        """Return the first item matching matcher, or None.
+        """Return the first matching item, or None.
+
+        Supports either:
+        - a function, like lambda item: item == 'B'
+        - a direct item, like 'B'
+
         Best case: O(1) if the head matches.
         Worst case: O(n) if the match is near the tail or not present.
         """
         node = self.head
 
         while node is not None:
-            if matcher(node.data):
-                return node.data
+            if callable(matcher):
+                if matcher(node.data):
+                    return node.data
+            else:
+                if node.data == matcher:
+                    return node.data
+
             node = node.next
 
         return None
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError.
+
         Best case: O(1) if deleting the head.
         Worst case: O(n) if the item is near the tail or not present.
         """
@@ -135,6 +148,7 @@ class LinkedList:
             if node.data == old_item:
                 node.data = new_item
                 return
+
             node = node.next
 
 

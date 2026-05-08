@@ -1,17 +1,3 @@
-#!python
-
-"""
-Text cleanup parser for corpus files.
-
-Can be used as a module:
-
-    from cleanup import clean_text
-
-Or as a script:
-
-    python cleanup.py corpus.txt
-    python cleanup.py corpus.txt > cleaned_corpus.txt
-"""
 
 import sys
 import re

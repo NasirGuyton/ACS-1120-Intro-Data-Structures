@@ -1,13 +1,4 @@
 
-"""
-Performance analysis for histogram count/frequency operations.
-
-Compares:
-1. List of tuples histogram
-2. Dictogram histogram
-3. HashTable histogram
-"""
-
 import timeit
 from dictogram import Dictogram
 from hashtable import HashTable

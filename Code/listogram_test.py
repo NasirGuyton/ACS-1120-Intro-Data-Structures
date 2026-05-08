@@ -1,4 +1,3 @@
-#!python
 
 from listogram import Listogram
 import unittest

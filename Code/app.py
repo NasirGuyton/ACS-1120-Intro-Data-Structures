@@ -1,4 +1,3 @@
-"""Main script, uses other modules to generate sentences."""
 
 from flask import Flask
 from tokens import tokenize

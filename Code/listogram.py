@@ -30,15 +30,19 @@ class Listogram(list):
 
         if index is not None:
             return self[index][1]
+
         return 0
 
     def __contains__(self, word):
         return self.index_of(word) is not None
 
     def index_of(self, target):
-        for i, (word, count) in enumerate(self):
+        for index, pair in enumerate(self):
+            word = pair[0]
+
             if word == target:
-                return i
+                return index
+
         return None
 
     def sample(self):
@@ -47,5 +51,6 @@ class Listogram(list):
 
         for word, count in self:
             fence += count
+
             if dart <= fence:
                 return word

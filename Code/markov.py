@@ -1,4 +1,3 @@
-#!python
 
 import random
 from tokens import tokenize
