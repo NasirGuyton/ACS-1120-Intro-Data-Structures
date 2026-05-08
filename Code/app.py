@@ -1,20 +1,26 @@
 """Main script, uses other modules to generate sentences."""
 from flask import Flask
-from sample import histogram, sample_weighted
+from dictogram import Dictogram
 
 app = Flask(__name__)
 
+# Build histogram once when the server starts
 with open("words.txt", "r", encoding="utf-8") as file:
-    source_text = file.read()
+    words = file.read().split()
 
-hist = histogram(source_text)
+hist = Dictogram(words)
+
+
+def generate_sentence(histogram, length=8):
+    words = [histogram.sample() for _ in range(length)]
+    return " ".join(words).capitalize() + "."
 
 
 @app.route("/")
 def home():
-    """Route that returns a web page containing the generated text."""
-    word = sample_weighted(hist)
-    return f"<h1>{word}</h1>"
+    """Route that returns a web page containing generated text."""
+    sentence = generate_sentence(hist)
+    return f"<h1>{sentence}</h1>"
 
 
 if __name__ == "__main__":
