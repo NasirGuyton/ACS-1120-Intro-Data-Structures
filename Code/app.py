@@ -1,25 +1,26 @@
 """Main script, uses other modules to generate sentences."""
+
 from flask import Flask
-from dictogram import Dictogram
+from markov import tokenize, build_markov_chain, generate_sentence
 
 app = Flask(__name__)
 
-# Build histogram once when the server starts
-with open("words.txt", "r", encoding="utf-8") as file:
-    words = file.read().split()
 
-hist = Dictogram(words)
+def load_corpus(filename="corpus.txt"):
+    """Load source text from a corpus file."""
+    with open(filename, "r", encoding="utf-8") as file:
+        return file.read()
 
 
-def generate_sentence(histogram, length=8):
-    words = [histogram.sample() for _ in range(length)]
-    return " ".join(words).capitalize() + "."
+corpus_text = load_corpus()
+words = tokenize(corpus_text)
+chain = build_markov_chain(words)
 
 
 @app.route("/")
 def home():
     """Route that returns a web page containing generated text."""
-    sentence = generate_sentence(hist)
+    sentence = generate_sentence(chain, words, max_words=15)
     return f"<h1>{sentence}</h1>"
 
 
