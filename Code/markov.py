@@ -3,70 +3,95 @@
 import random
 import re
 from dictogram import Dictogram
+from queue import Queue
 
 
 def tokenize(text):
-    """Split text into clean word tokens."""
+    """Split text into word and punctuation tokens."""
     return re.findall(r"\b\w+\b|[.!?]", text)
 
 
-def build_markov_chain(words):
-    """Build a Markov chain from a list of words.
+def build_markov_chain(words, order=2):
+    """Build an nth-order Markov chain.
 
-    The chain looks like:
+    For order=1:
     {
-        "a": Dictogram(["dog", "cat", "man"]),
-        "dog": Dictogram(["runs", "barks"])
+        ("the",): Dictogram(["cat", "dog"])
     }
+
+    For order=2:
+    {
+        ("the", "cat"): Dictogram(["sat", "ran"])
+    }
+
+    Each key is a tuple of previous words.
+    Each value is a Dictogram of possible next words.
     """
+    if order < 1:
+        raise ValueError("Order must be at least 1")
+
     chain = {}
 
-    for index in range(len(words) - 1):
-        current_word = words[index]
-        next_word = words[index + 1]
+    if len(words) <= order:
+        return chain
 
-        if current_word not in chain:
-            chain[current_word] = Dictogram()
+    previous_words = Queue()
 
-        chain[current_word].add_count(next_word)
+    for index in range(order):
+        previous_words.enqueue(words[index])
+
+    for index in range(order, len(words)):
+        state = tuple(previous_words)
+        next_word = words[index]
+
+        if state not in chain:
+            chain[state] = Dictogram()
+
+        chain[state].add_count(next_word)
+
+        previous_words.dequeue()
+        previous_words.enqueue(next_word)
 
     return chain
 
 
-def random_start_word(words):
-    """Choose a reasonable word to start a sentence."""
-    sentence_starters = []
+def get_sentence_start_states(chain):
+    """Return states that look like good sentence starters."""
+    starters = []
 
-    for index, word in enumerate(words):
-        if index == 0:
-            sentence_starters.append(word)
-        elif words[index - 1] in [".", "!", "?"]:
-            sentence_starters.append(word)
+    for state in chain.keys():
+        first_word = state[0]
 
-    if len(sentence_starters) > 0:
-        return random.choice(sentence_starters)
+        if first_word and first_word[0].isupper():
+            starters.append(state)
 
-    return random.choice(words)
+    if len(starters) == 0:
+        starters = list(chain.keys())
+
+    return starters
 
 
-def generate_sentence(chain, words, max_words=15):
-    """Generate a sentence using a Markov chain."""
-    if len(words) == 0:
+def generate_sentence(chain, max_words=20):
+    """Generate a sentence using an nth-order Markov chain."""
+    if len(chain) == 0:
         return ""
 
-    current_word = random_start_word(words)
-    sentence = [current_word]
+    starters = get_sentence_start_states(chain)
+    state = random.choice(starters)
 
-    for _ in range(max_words - 1):
-        if current_word not in chain:
+    sentence = list(state)
+
+    for _ in range(max_words - len(sentence)):
+        if state not in chain:
             break
 
-        next_word = chain[current_word].sample()
+        next_word = chain[state].sample()
         sentence.append(next_word)
-        current_word = next_word
 
-        if current_word in [".", "!", "?"]:
+        if next_word in [".", "!", "?"]:
             break
+
+        state = tuple(list(state[1:]) + [next_word])
 
     return format_sentence(sentence)
 
@@ -94,20 +119,29 @@ def format_sentence(words):
     return sentence
 
 
+def print_chain(chain):
+    """Print a readable version of the Markov chain."""
+    for state, next_words in chain.items():
+        print(state, "->", next_words)
+
+
 def main():
-    sample_text = "A man, a plan, a canal: Panama! A dog, a panic in a pagoda!"
+    sample_text = "I went left, you went right, I went left, I went right,"
     words = tokenize(sample_text)
-    chain = build_markov_chain(words)
 
     print("Tokens:")
     print(words)
 
-    print("\nMarkov chain:")
-    for word, next_words in chain.items():
-        print(word, "->", next_words)
+    print("\nFirst-order Markov chain:")
+    first_order_chain = build_markov_chain(words, order=1)
+    print_chain(first_order_chain)
+
+    print("\nSecond-order Markov chain:")
+    second_order_chain = build_markov_chain(words, order=2)
+    print_chain(second_order_chain)
 
     print("\nGenerated sentence:")
-    print(generate_sentence(chain, words))
+    print(generate_sentence(second_order_chain, max_words=12))
 
 
 if __name__ == "__main__":

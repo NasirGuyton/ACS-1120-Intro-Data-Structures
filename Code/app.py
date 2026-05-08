@@ -12,15 +12,18 @@ def load_corpus(filename="corpus.txt"):
         return file.read()
 
 
+
+MARKOV_ORDER = 2
+
 corpus_text = load_corpus()
 words = tokenize(corpus_text)
-chain = build_markov_chain(words)
+chain = build_markov_chain(words, order=MARKOV_ORDER)
 
 
 @app.route("/")
 def home():
     """Route that returns a web page containing generated text."""
-    sentence = generate_sentence(chain, words, max_words=15)
+    sentence = generate_sentence(chain, max_words=25)
     return f"<h1>{sentence}</h1>"
 
 
